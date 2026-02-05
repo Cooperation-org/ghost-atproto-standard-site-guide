@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Standard.site for Ghost → AT Protocol Bridge</title>
+    <meta
+      name="description"
+      content="Enable standard.site publishing from Ghost via the AT Protocol bridge. Step-by-step setup, testing, and verification."
+    />
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap');
+
+      :root {
+        --bg: #0f141a;
+        --bg-accent: #0c1d22;
+        --panel: #141c22;
+        --panel-2: #11181d;
+        --ink: #f6f4ee;
+        --muted: #b7c0c7;
+        --accent: #36cbb0;
+        --accent-2: #ffb454;
+        --line: #22313b;
+        --shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        background: radial-gradient(1200px 600px at 10% -10%, #1a2c33, transparent),
+          radial-gradient(900px 500px at 90% 0%, #1a222a, transparent),
+          var(--bg);
+        color: var(--ink);
+        font-family: 'Archivo', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+        line-height: 1.6;
+      }
+
+      a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+
+      a:hover {
+        text-decoration: underline;
+      }
+
+      .wrap {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 40px 20px 80px;
+      }
+
+      .hero {
+        display: grid;
+        gap: 24px;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        align-items: center;
+        padding: 32px;
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        background: linear-gradient(135deg, rgba(54, 203, 176, 0.08), rgba(255, 180, 84, 0.06)),
+          var(--panel);
+        box-shadow: var(--shadow);
+      }
+
+      .hero h1 {
+        font-family: 'Fraunces', serif;
+        font-size: clamp(2.2rem, 3vw, 3.4rem);
+        margin: 0 0 12px;
+        letter-spacing: 0.2px;
+      }
+
+      .hero p {
+        margin: 0 0 16px;
+        color: var(--muted);
+        font-size: 1.05rem;
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 12px;
+        border-radius: 999px;
+        background: rgba(54, 203, 176, 0.1);
+        color: var(--accent);
+        border: 1px solid rgba(54, 203, 176, 0.2);
+        font-size: 0.85rem;
+        font-weight: 600;
+      }
+
+      .cta-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 20px;
+      }
+
+      .cta {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 18px;
+        border-radius: 12px;
+        background: var(--accent);
+        color: #0b1317;
+        font-weight: 700;
+        border: none;
+      }
+
+      .cta.secondary {
+        background: transparent;
+        color: var(--ink);
+        border: 1px solid var(--line);
+      }
+
+      .grid {
+        display: grid;
+        gap: 18px;
+        margin-top: 32px;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      }
+
+      .card {
+        padding: 18px;
+        border-radius: 16px;
+        border: 1px solid var(--line);
+        background: var(--panel-2);
+      }
+
+      .card h3 {
+        margin: 0 0 8px;
+        font-size: 1.1rem;
+      }
+
+      .section {
+        margin-top: 40px;
+      }
+
+      .section h2 {
+        font-family: 'Fraunces', serif;
+        font-size: 2rem;
+        margin: 0 0 12px;
+      }
+
+      .list {
+        padding-left: 18px;
+        color: var(--muted);
+      }
+
+      .codeblock {
+        background: #0b1116;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 16px;
+        overflow-x: auto;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        color: #d7e0e6;
+        font-size: 0.9rem;
+      }
+
+      .note {
+        background: rgba(255, 180, 84, 0.1);
+        border: 1px solid rgba(255, 180, 84, 0.2);
+        padding: 14px 16px;
+        border-radius: 12px;
+        color: #ffd59e;
+      }
+
+      .link-strip {
+        display: grid;
+        gap: 12px;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      }
+
+      .link-strip a {
+        display: block;
+        padding: 12px 14px;
+        border-radius: 12px;
+        background: #0f171c;
+        border: 1px solid var(--line);
+      }
+
+      .footer {
+        margin-top: 60px;
+        padding-top: 20px;
+        border-top: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
+      @media (max-width: 720px) {
+        .hero {
+          padding: 24px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="hero">
+        <div>
+          <span class="badge">Ghost → AT Protocol Bridge</span>
+          <h1>Publish Ghost posts as standard.site documents</h1>
+          <p>
+            standard.site turns your Ghost posts into long-form AT Protocol documents. Readers get
+            discoverable articles, canonical URLs, and future-proof compatibility with long-form apps.
+          </p>
+          <div class="cta-row">
+            <a class="cta" href="#get-started">Get started</a>
+            <a class="cta secondary" href="#verify">Verify .well-known</a>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Why standard.site?</h3>
+          <ul class="list">
+            <li>Documents, not tweets — proper long-form content</li>
+            <li>Canonical URLs that point back to your Ghost site</li>
+            <li>Discoverable by long-form readers and aggregators</li>
+            <li>Interoperable across the AT Protocol ecosystem</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="section" id="get-started">
+        <h2>Get started</h2>
+        <div class="grid">
+          <div class="card">
+            <h3>Ghost blog</h3>
+            <p class="muted">Use Ghost(Pro) or self-hosted Ghost.</p>
+            <p><a href="https://ghost.org/">Create a Ghost site</a></p>
+            <p><a href="https://ghost.org/docs/admin-api/">Get an Admin API key</a></p>
+          </div>
+          <div class="card">
+            <h3>Bluesky account</h3>
+            <p class="muted">You need a handle and an app password.</p>
+            <p><a href="https://bsky.app/">Open Bluesky</a></p>
+          </div>
+          <div class="card">
+            <h3>standard.site docs</h3>
+            <p class="muted">Read the specification and ecosystem notes.</p>
+            <p><a href="https://standard.site/">standard.site</a></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Quick start</h2>
+        <ul class="list">
+          <li>Configure `.env` with `DATABASE_URL`, `JWT_SECRET`, and `BACKEND_URL`.</li>
+          <li>Start the bridge backend and create a user account.</li>
+          <li>Update your user profile with Ghost URL + Admin API key.</li>
+          <li>Enable standard.site and sync posts.</li>
+          <li>Publish a post to create a standard.site document.</li>
+        </ul>
+        <div class="codeblock">
+          curl -X POST http://localhost:5001/api/standard-site/enable \
+          -H "Authorization: Bearer $JWT_TOKEN" \
+          -H "Content-Type: application/json" \
+          -d '{
+            "publicationName": "My Blog",
+            "publicationDescription": "Testing standard.site",
+            "dualPost": false
+          }'
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Dual posting (optional)</h2>
+        <div class="note">
+          standard.site creates a document record only. If you want a social feed post on Bluesky too,
+          enable dual posting and include `customText` when publishing.
+        </div>
+      </div>
+
+      <div class="section" id="verify">
+        <h2>Verify .well-known</h2>
+        <p class="muted">
+          standard.site requires a `.well-known/site.standard.publication` endpoint. Your domain should
+          return the AT-URI of your publication record.
+        </p>
+        <div class="codeblock">
+          curl "https://yourblog.com/.well-known/site.standard.publication"
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Useful links</h2>
+        <div class="link-strip">
+          <a href="https://github.com/Cooperation-org/ghost-atproto">GitHub repo: ghost-atproto</a>
+          <a href="https://ghost.org/docs/admin-api/">Ghost Admin API docs</a>
+          <a href="https://standard.site/">standard.site specification</a>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>FAQ</h2>
+        <div class="grid">
+          <div class="card">
+            <h3>Will this show up on Bluesky?</h3>
+            <p class="muted">
+              standard.site creates a document record. To also post to the Bluesky social feed, enable
+              dual posting and include `customText` on publish.
+            </p>
+          </div>
+          <div class="card">
+            <h3>Where is the human-readable view?</h3>
+            <p class="muted">
+              The canonical, human-readable view is your Ghost post URL. The standard.site record points back to it.
+            </p>
+          </div>
+          <div class="card">
+            <h3>Who can use it?</h3>
+            <p class="muted">
+              Any Ghost admin can use the bridge once they add their Ghost Admin API key and Bluesky credentials.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer">
+        Built for the Ghost ↔ AT Protocol bridge. Not affiliated with Ghost or Bluesky.
+      </div>
+    </div>
+  </body>
+</html>
